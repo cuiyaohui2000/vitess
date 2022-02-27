@@ -36,6 +36,7 @@ var builtinFunctions = map[string]builtin{
 	"collation": builtinCollation{},
 	"bit_count": builtinBitCount{},
 	"hex":       builtinHex{},
+	"pi":        builtinPi{},
 }
 
 var builtinFunctionsRewrite = map[string]builtinRewrite{
@@ -384,6 +385,19 @@ func (builtinBitCount) typeof(env *ExpressionEnv, args []Expr) (sqltypes.Type, f
 
 	_, f := args[0].typeof(env)
 	return sqltypes.Int64, f
+}
+
+type builtinPi struct{}
+
+func (builtinPi) call(_ *ExpressionEnv, args []EvalResult, result *EvalResult) {
+	result.setFloat(3.141592653589793)
+}
+
+func (builtinPi) typeof(env *ExpressionEnv, args []Expr) (sqltypes.Type, flag) {
+	if len(args) != 0 {
+		throwArgError("PI")
+	}
+	return sqltypes.Float64, flagNull
 }
 
 type WeightStringCallExpr struct {

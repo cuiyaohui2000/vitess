@@ -468,6 +468,19 @@ func TestBitwiseOperatorsUnary(t *testing.T) {
 	}
 }
 
+func TestPi(t *testing.T) {
+	var conn = mysqlconn(t)
+	defer conn.Close()
+
+	for _, op := range []string{"PI"} {
+		t.Run(op, func(t *testing.T) {
+			for _, rhs := range []string{"", "1"} {
+				compareRemoteQuery(t, conn, fmt.Sprintf("SELECT %s(%s)", op, rhs))
+			}
+		})
+	}
+}
+
 func min(a, b int) int {
 	if a < b {
 		return a
